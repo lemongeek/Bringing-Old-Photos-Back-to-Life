@@ -21,7 +21,7 @@ class BaseOptions:
             help="name of the experiment. It decides where to store samples and models",
         )
         self.parser.add_argument(
-            "--gpu_ids", type=str, default="0", help="gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU"
+            "--gpu_ids", type=str, default="-1", help="gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU"
         )
         self.parser.add_argument(
             "--checkpoints_dir", type=str, default="./checkpoints", help="models are saved here"
@@ -340,9 +340,9 @@ class BaseOptions:
         str_ids = self.opt.gpu_ids.split(",")
         self.opt.gpu_ids = []
         for str_id in str_ids:
-            id = int(str_id)
-            if id >= 0:
-                self.opt.gpu_ids.append(id)
+            int_id = int(str_id)
+            if int_id >= 0:
+                self.opt.gpu_ids.append(int_id)
 
         # set gpu ids
         if len(self.opt.gpu_ids) > 0:
