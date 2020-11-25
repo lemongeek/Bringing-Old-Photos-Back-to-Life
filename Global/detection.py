@@ -77,7 +77,10 @@ def main(config):
     model.load_state_dict(checkpoint["model_state"])
     print("model weights loaded")
 
-    model.to(config.GPU)
+    # 适配非cuda 模式
+    # model.to(config.GPU)
+    if config.GPU!=-1:
+        model.to(config.GPU)
     model.eval()
 
     ## dataloader and transformation
@@ -122,7 +125,8 @@ def main(config):
         scratch_image = tv.transforms.Normalize([0.5], [0.5])(scratch_image)
 
         scratch_image = torch.unsqueeze(scratch_image, 0)
-        scratch_image = scratch_image.to(config.GPU)
+        if config.GPU!=-1:
+            scratch_image = scratch_image.to(config.GPU)
 
         P = torch.sigmoid(model(scratch_image))
 
@@ -146,7 +150,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # parser.add_argument('--checkpoint_name', type=str, default="FT_Epoch_latest.pt", help='Checkpoint Name')
 
-    parser.add_argument("--GPU", type=int, default=0)
+    parser.add_argument("--GPU", type=int, default=-1)
     parser.add_argument("--test_path", type=str, default=".")
     parser.add_argument("--output_dir", type=str, default=".")
     parser.add_argument("--input_size", type=str, default="scale_256", help="resize_256|full_size|scale_256")
